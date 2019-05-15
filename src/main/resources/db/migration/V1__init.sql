@@ -1,0 +1,1 @@
+create table groovyrep (id identity not null, desc varchar(255), script clob, primary key (id));
