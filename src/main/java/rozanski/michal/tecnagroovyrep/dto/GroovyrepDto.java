@@ -1,30 +1,21 @@
-package rozanski.michal.tecnagroovyrep.entity;
+package rozanski.michal.tecnagroovyrep.dto;
 
-import org.springframework.data.repository.Repository;
+public class GroovyrepDto {
 
-import javax.persistence.*;
-import java.util.Collection;
-
-@Entity
-@Table(name = "groovyrep")
-public class Groovyrep {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String script;
 
-    public Groovyrep() {
+    public GroovyrepDto(){
     }
 
-    public Groovyrep(Long id, String name, String script) {
+    public GroovyrepDto(Long id, String name, String script){
         this.id = id;
         this.name = name;
         this.script = script;
     }
 
-    public Groovyrep(String name, String script) {
+    public GroovyrepDto(String name, String script){
         this.name = name;
         this.script = script;
     }
@@ -52,7 +43,4 @@ public class Groovyrep {
     public void setScript(String script) {
         this.script = script;
     }
-
-
 }
-
