@@ -23,7 +23,7 @@ public class GroovyrepListingRepositoryTest {
     public void shouldRetrieveListOfScripts() {
         List<GroovyrepIdAndName> groovyrepIdAndNames = groovyrepListingRepository.getGroovyrepIdAndName();
 
-        assertEquals(groovyrepIdAndNames.size(), 5);
+        assertTrue("Number of scripts should be greater than 0",  groovyrepIdAndNames.size() > 0);
 
 
     }
