@@ -39,35 +39,37 @@ public class GroovyrepController {
     @ResponseBody
     @GetMapping(value = "/script/{id}", produces = "application/json")
     public GroovyrepDto getGroovyScriptById(@PathVariable Long id) {
-        GroovyrepDto groovyrepDto = null;
+        GroovyrepDto responseGroovyrepDto = null;
         try {
-            groovyrepDto = groovyrepService.findById(id);
+            responseGroovyrepDto = groovyrepService.findById(id);
         } catch (GroovyrepException e) {
             e.printStackTrace();
         }
-        return groovyrepDto;
+        return responseGroovyrepDto;
     }
 
 
     @PostMapping(value = "/script", produces = "application/json")
     public GroovyrepDto newScript(@RequestBody GroovyrepDto newGroovyrep) {
+        GroovyrepDto responseGroovyrepDto = null;
         try {
-            return groovyrepService.saveOrUpdate(newGroovyrep);
+            responseGroovyrepDto = groovyrepService.saveOrUpdate(newGroovyrep);
         } catch (GroovyrepException e) {
             e.printStackTrace();
         }
-        return null;
+        return responseGroovyrepDto;
     }
 
     @PutMapping(value = "/script/{id}", produces = "application/json")
     public GroovyrepDto updateScript(@RequestBody GroovyrepDto groovyrep, @PathVariable Long id) {
         GroovyrepDto toSaveDto = new GroovyrepDto(id, groovyrep.getName(), groovyrep.getScript());
+        GroovyrepDto responseGroovyrepDto = null;
         try {
-            return groovyrepService.saveOrUpdate(toSaveDto);
+            responseGroovyrepDto = groovyrepService.saveOrUpdate(toSaveDto);
         } catch (GroovyrepException e) {
             e.printStackTrace();
         }
-        return null;
+        return responseGroovyrepDto;
     }
 
 
