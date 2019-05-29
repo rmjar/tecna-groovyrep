@@ -2,9 +2,7 @@ package rozanski.michal.tecnagroovyrep.service;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import rozanski.michal.tecnagroovyrep.converters.GroovyrepConverter;
 import rozanski.michal.tecnagroovyrep.dto.GroovyResultDto;
@@ -14,22 +12,18 @@ import rozanski.michal.tecnagroovyrep.dto.GroovyrepRunParamsDto;
 import rozanski.michal.tecnagroovyrep.entity.Groovyrep;
 import rozanski.michal.tecnagroovyrep.entity.GroovyrepIdAndName;
 import rozanski.michal.tecnagroovyrep.exceptions.GroovyrepException;
-import rozanski.michal.tecnagroovyrep.repository.GroovyrepListingRepository;
 import rozanski.michal.tecnagroovyrep.repository.GroovyrepRepository;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 public class GroovyrepServiceImpl implements GroovyrepService {
     @Autowired
     private GroovyrepRepository groovyrepRepository;
 
-    @Autowired
-    GroovyrepListingRepository groovyrepListingRepository;
 
     @Autowired
     GroovyrepConverter groovyrepConverter;
@@ -38,12 +32,10 @@ public class GroovyrepServiceImpl implements GroovyrepService {
     public GroovyrepDto findById(Long id) throws GroovyrepException {
         Optional<Groovyrep> source = groovyrepRepository.findById(id);
 
-        GroovyrepDto target = new GroovyrepDto();
-        if (source.isPresent()) {
-            target = groovyrepConverter.convertToGroovyrepDto(source.get());
-        } else {
-            throw new GroovyrepException("Script with id: " + id + " not found.");
-        }
+        GroovyrepDto target = source
+                .map(s -> groovyrepConverter.convertToGroovyrepDto(s))
+                .orElseThrow(() -> new GroovyrepException("Script with id: " + id + " not found."));
+
         return target;
     }
 
@@ -52,11 +44,9 @@ public class GroovyrepServiceImpl implements GroovyrepService {
         Optional<Groovyrep> source = groovyrepRepository.findOneByName(name);
 
         GroovyrepDto target;
-        if (source.isPresent()) {
-            target = groovyrepConverter.convertToGroovyrepDto(source.get());
-        } else {
-            throw new GroovyrepException("Script with name: " + name + " not found.");
-        }
+        target = source
+                .map(s -> groovyrepConverter.convertToGroovyrepDto(s))
+                .orElseThrow(() -> new GroovyrepException("Script with name: " + name + " not found."));
         return target;
     }
 
@@ -78,6 +68,7 @@ public class GroovyrepServiceImpl implements GroovyrepService {
     @Override
     public void delete(Long id) throws GroovyrepException {
         Optional<Groovyrep> groovyrep = groovyrepRepository.findById(id);
+
         if (groovyrep.isPresent()) {
             try {
                 groovyrepRepository.delete(groovyrep.get());
@@ -113,9 +104,9 @@ public class GroovyrepServiceImpl implements GroovyrepService {
     @Override
     public List<GroovyrepIdAndNameDto> listResources() throws GroovyrepException {
 
-        List<GroovyrepIdAndName> groovyListing = groovyrepListingRepository.getGroovyrepIdAndName();
+        List<GroovyrepIdAndName> groovyListing = groovyrepRepository.getGroovyrepIdAndName();
 
-        List<GroovyrepIdAndNameDto> groovyListingDto = StreamSupport.stream(groovyListing.spliterator(), false)
+        List<GroovyrepIdAndNameDto> groovyListingDto = groovyListing.stream()
                 .map(groovyListingItem -> groovyrepConverter.convertToGroovyrepIdAndNameDto(groovyListingItem))
                 .collect(Collectors.toList());
         return groovyListingDto;

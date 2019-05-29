@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
 public class GroovyrepListingRepositoryTest {
 
     @Autowired
-    private GroovyrepListingRepository groovyrepListingRepository;
+    private GroovyrepRepository groovyrepListingRepository;
 
     @Test
     public void shouldRetrieveListOfScripts() {
